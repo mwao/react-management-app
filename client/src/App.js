@@ -22,32 +22,19 @@ const styles=(theme)=>({
   },
 })
 
-const customers=[{
-  'id':1,
-  'image':'https://placeimg.com/64/64/1',
-  'name':'홍길동',
-  'birthday':'961111',
-  'gender':'남자',
-  'job':'대학생'
-
-},{
-  'id':2,
-  'image':'https://placeimg.com/64/64/2',
-  'name':'이정현',
-  'birthday':'951127',
-  'gender':'여자',
-  'job':'회사원'
-},{
-  'id':3,
-  'image':'https://placeimg.com/64/64/3',
-  'name':'메롱',
-  'birthday':'??????',
-  'gender':'?',
-  'job':'무직'
-}
-]
-
 class App extends React.Component{
+  state={
+    customers:""
+  }
+  componentDidMount(){
+    this.callApi().then(res=>this.setState({customers:res}))
+    .catch(err=>console.log(err));
+  }
+  callApi=async()=>{
+    const response=await fetch('/api/customers');
+    const body=await response.json();
+    return body;
+  }
   render(){
     const {classes}=this.props;
   return (
@@ -64,7 +51,7 @@ class App extends React.Component{
 
         </TableHead>
         <TableBody>
-{customers.map(customers=>{return(
+{this.state.customers?this.state.customers.map(customers=>{return(
       <Customer 
    name={customers.name}
    birthday={customers.birthday}
@@ -72,7 +59,8 @@ class App extends React.Component{
    job={customers.job}
    id={customers.id}
    image={customers.image}></Customer>)
-     } )}
+     } )
+     :""}
         </TableBody>
       </Table>
       </Paper>
